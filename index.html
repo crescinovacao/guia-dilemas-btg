@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia de Dilemas da Liderança - BTG PDL 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Aptos', 'Segoe UI', Arial, sans-serif;
+            background: #f5f7fa;
+            color: #210000;
+            min-height: 100vh;
+            padding: 24px 16px 60px;
+        }
+
+        .container { max-width: 960px; margin: 0 auto; }
+
+        /* ── Header ── */
+        .header {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .header img { height: 30px; display: block; }
+        .header-tag { font-size: 11px; font-weight: 700; color: #007BEA; letter-spacing: 1.5px; text-transform: uppercase; }
+
+        /* ── Hero ── */
+        .hero {
+            background: #001B71;
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 20px;
+        }
+        .hero-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #B3DFFF; margin-bottom: 12px; }
+        .hero h1 { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: 28px; color: #fff; line-height: 1.2; margin-bottom: 10px; }
+        .hero p { font-size: 14px; color: #B3DFFF; line-height: 1.6; max-width: 640px; }
+
+        /* ── Instruction bar ── */
+        .instruction {
+            background: #fff;
+            border-radius: 12px;
+            padding: 14px 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.5;
+        }
+        .instruction-icon {
+            width: 32px; height: 32px;
+            background: #e8f0ff;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .instruction-dot {
+            width: 10px; height: 10px;
+            background: #007BEA;
+            border-radius: 50%;
+        }
+
+        /* ── Legend ── */
+        .legend {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 12px;
+            color: #555;
+        }
+        .badge {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+        .badge-team { background: #007BEA; color: #fff; }
+        .badge-individual { background: #f0f0f4; color: #555; border: 1px solid #ddd; }
+        .badge-depends { background: #e8f0ff; color: #001B71; border: 1px solid #B3DFFF; }
+
+        /* ── Dilema Grid ── */
+        .dilemas-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 0;
+        }
+
+        /* ── Dilema Card ── */
+        .dilema-wrap { grid-column: span 1; }
+        .dilema-wrap.expanded { grid-column: 1 / -1; }
+
+        .dilema-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 22px 24px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            position: relative;
+            user-select: none;
+        }
+        .dilema-card:hover { border-color: #B3DFFF; box-shadow: 0 2px 12px rgba(0,123,234,0.08); }
+        .dilema-card.active { border-color: #007BEA; }
+
+        .dilema-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .dilema-num {
+            font-family: 'Raleway', sans-serif;
+            font-weight: 800;
+            font-size: 38px;
+            color: #B3DFFF;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+        .dilema-card.active .dilema-num { color: #007BEA; }
+
+        .dilema-chevron {
+            font-size: 16px;
+            color: #ccc;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+        .dilema-card.active .dilema-chevron { transform: rotate(180deg); color: #007BEA; }
+
+        .dilema-title {
+            font-family: 'Raleway', sans-serif;
+            font-weight: 800;
+            font-size: 16px;
+            color: #001B71;
+            margin: 8px 0 10px;
+            line-height: 1.3;
+        }
+        .dilema-goal { font-size: 12px; color: #888; line-height: 1.4; }
+
+        /* ── Detail Panel ── */
+        .dilema-detail {
+            display: none;
+            background: #fff;
+            border-radius: 0 0 12px 12px;
+            border: 2px solid #007BEA;
+            border-top: none;
+            padding: 0 28px 28px;
+            margin-top: -2px;
+        }
+        .dilema-detail.open { display: block; }
+
+        .detail-divider { height: 1px; background: #f0f0f4; margin-bottom: 24px; }
+
+        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+        /* ── Detail sections ── */
+        .detail-section-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #007BEA;
+            margin-bottom: 12px;
+        }
+
+        .tipo-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            background: #fafbfd;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #555;
+        }
+
+        .acao-block {
+            background: #fafbfd;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .acao-title {
+            font-family: 'Raleway', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            color: #001B71;
+            margin-bottom: 6px;
+        }
+        .acao-fonte {
+            font-size: 10px;
+            color: #999;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .acao-desc { font-size: 12px; color: #555; line-height: 1.5; }
+
+        /* ── Passo a passo ── */
+        .passos-list { display: flex; flex-direction: column; gap: 8px; }
+        .passo-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+        .passo-num {
+            width: 22px; height: 22px;
+            background: #007BEA;
+            color: #fff;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Raleway', sans-serif;
+            font-weight: 800;
+            font-size: 11px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .passo-text { font-size: 12px; color: #444; line-height: 1.5; }
+        .passo-bold { font-weight: 700; color: #001B71; }
+
+        /* ── Materiais chips ── */
+        .materiais-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+        .material-chip {
+            background: #e8f0ff;
+            color: #001B71;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        /* ── Alerta note ── */
+        .nota-box {
+            background: #fff8e8;
+            border: 1px solid #ffe099;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 12px;
+            color: #7a5700;
+            line-height: 1.5;
+            margin-top: 12px;
+        }
+        .nota-tag { font-weight: 700; }
+
+        /* ── Full-width expand handling ── */
+        .dilema-card-top {
+            background: #fff;
+            border-radius: 12px 12px 0 0;
+            padding: 22px 24px;
+            cursor: pointer;
+            border: 2px solid #007BEA;
+            border-bottom: none;
+        }
+
+        /* ── Footer ── */
+        .footer {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px 28px;
+            text-align: center;
+            font-size: 11px;
+            color: #aaa;
+            letter-spacing: 0.5px;
+            margin-top: 20px;
+        }
+
+        /* ── Responsive: tablet ── */
+        @media (max-width: 860px) {
+            .container { max-width: 100%; }
+            .hero h1 { font-size: 24px; }
+            .detail-grid { grid-template-columns: 1fr; gap: 16px; }
+        }
+
+        /* ── Responsive: mobile ── */
+        @media (max-width: 600px) {
+            body { padding: 8px 8px 40px; }
+            .header { padding: 12px 16px; }
+            .header img { height: 24px; }
+            .hero { padding: 22px 16px; }
+            .hero h1 { font-size: 20px; }
+            .hero p { font-size: 13px; }
+            .instruction { padding: 12px 16px; font-size: 12px; gap: 10px; }
+            .dilemas-grid { grid-template-columns: 1fr; gap: 8px; }
+            .dilema-wrap.expanded { grid-column: 1; }
+            .dilema-card { padding: 16px; }
+            .dilema-num { font-size: 28px; }
+            .dilema-title { font-size: 14px; }
+            .dilema-detail { padding: 0 16px 20px; }
+            .detail-grid { grid-template-columns: 1fr; gap: 14px; }
+            .acao-block { padding: 12px; }
+            .acao-title { font-size: 13px; }
+            .passo-text { font-size: 11px; }
+            .footer { padding: 12px 16px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- Header -->
+    <div class="header">
+        <img src="https://i.imgur.com/XVfvmJy.png" alt="Crescimentum">
+        <div class="header-tag">PDL BTG 2026</div>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero">
+        <div class="hero-label">Ferramenta de Uso Rápido</div>
+        <h1>Guia de Dilemas da Liderança</h1>
+        <p>Identifique a dor mais presente no seu time hoje, vá direto na categoria correspondente e saia com uma ação concreta para conduzir com sua equipe.</p>
+    </div>
+
+    <!-- Instruction -->
+    <div class="instruction">
+        <div class="instruction-icon"><div class="instruction-dot"></div></div>
+        <span>Clique em qualquer dilema abaixo para ver o objetivo, o tipo de ação recomendada e o passo a passo para conduzir com seu time.</span>
+    </div>
+
+    <!-- Dilemas Grid -->
+    <div class="dilemas-grid" id="grid">
+
+        <!-- 1. Conflito no time -->
+        <div class="dilema-wrap" id="wrap-1">
+            <div class="dilema-card" id="card-1" onclick="toggle(1)">
+                <div class="dilema-top">
+                    <span class="dilema-num">01</span>
+                    <span class="dilema-chevron">&#9660;</span>
+                </div>
+                <div class="dilema-title">Conflito no time</div>
+                <div class="dilema-goal">Destravar um time dividido e reestabelecer a colaboração</div>
+            </div>
+            <div class="dilema-detail" id="detail-1">
+                <div class="detail-divider"></div>
+                <div class="detail-grid">
+                    <div>
+                        <div class="detail-section-label">Ação recomendada</div>
+                        <div class="acao-block">
+                            <div class="acao-title">Conflito de tarefa: Frame Lidando com Conflitos</div>
+                            <div class="acao-fonte">Exercício Crescimentum</div>
+                            <div class="acao-desc">Discordância sobre o que fazer ou como fazer. Pode e deve ser aberto em reunião coletiva porque o time ganha ao alinhar perspectivas.</div>
+                        </div>
+                        <div class="acao-block">
+                            <div class="acao-title">Conflito de relacionamento: Confronto de percepções</div>
+                            <div class="acao-fonte">Dinâmica Crescimentum</div>
+                            <div class="acao-desc">Atrito pessoal entre pessoas. Comece com conversas 1:1 separadas para entender cada lado antes de qualquer abordagem coletiva.</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="detail-section-label" style="margin-bottom:8px;">Conflito de tarefa (reunião coletiva)</div>
+                        <div class="passos-list">
+                            <div class="passo-item"><div class="passo-num">1</div><div class="passo-text"><span class="passo-bold">Abra sem julgamento.</span> Apresente o conflito como uma tensão produtiva, não como um problema de pessoas.</div></div>
+                            <div class="passo-item"><div class="passo-num">2</div><div class="passo-text"><span class="passo-bold">Explore interesses, não posições.</span> Pergunte: "O que cada lado precisa que esse tema resolva?" antes de discutir o que cada um quer.</div></div>
+                            <div class="passo-item"><div class="passo-num">3</div><div class="passo-text"><span class="passo-bold">Reflexão em etapas.</span> Individual (1 min) → duplas (2 min) → quartetos (4 min) → plenária. Garante que todas as vozes sejam ouvidas antes da decisão.</div></div>
+                            <div class="passo-item"><div class="passo-num">4</div><div class="passo-text"><span class="passo-bold">Construa acordos.</span> Documente o que o time decidiu e quem faz o que dali para frente.</div></div>
+                        </div>
+                        <div class="detail-section-label" style="margin-top:16px;margin-bottom:8px;">Conflito de relacionamento (conversa 1:1 primeiro)</div>
+                        <div class="passos-list">
+                            <div class="passo-item"><div class="passo-num">1</div><div class="passo-text"><span class="passo-bold">Converse com cada parte separadamente.</span> Ouça sem interromper. não tome partido. O objetivo é entender o que cada um está sentindo, não quem tem razão.</div></div>
+                            <div class="passo-item"><div class="passo-num">2</div><div class="passo-text"><span class="passo-bold">Nomeie o impacto, não a intenção.</span> Pergunte: "Como esse atrito está afetando o seu trabalho?" Foque em comportamentos observáveis, não em características de personalidade.</div></div>
+                            <div class="passo-item"><div class="passo-num">3</div><div class="passo-text"><span class="passo-bold">Proponha um encontro mediado.</span> Somente quando ambos estiverem prontos: traga as duas partes, estabeleça regras (fala um de cada vez, foco em solução) e conduza o diálogo.</div></div>
+                            <div class="passo-item"><div class="passo-num">4</div><div class="passo-text"><span class="passo-bold">Feche com um acordo concreto.</span> O que cada um vai fazer diferente? Defina e registre. Marque um acompanhamento em 2 semanas.</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Aculturamento -->
+        <div class="dilema-wrap" id="wrap-2">
+            <div class="dilema-card" id="card-2" onclick="toggle(2)">
+                <div class="dilema-top">
+                    <span class="dilema-num">02</span>
+                    <span class="dilema-chevron">&#9660;</span>
+                </div>
+                <div class="dilema-title">Falta de aculturamento</div>
+                <div class="dilema-goal">Endereçar um time que não tem a cara ou os valores BTG</div>
+            </div>
+            <div class="dilema-detail" id="detail-2">
+                <div class="detail-divider"></div>
+                <div class="detail-grid">
+                    <div>
+                        <div class="detail-section-label">Ação recomendada</div>
+                        <div class="acao-block">
+                            <div class="acao-title">Retrospectiva de valores: o que vivemos e o que ainda precisamos viver</div>
+                            <div class="acao-desc">O time mapeia coletivamente quais comportamentos já pratica com consistência e quais ainda não aparecem no dia a dia, no técnico e no comportamental. Torna o gap cultural visível e compartilhado sem julgamento.</div>
+                        </div>
+                        <div class="acao-block">
+                            <div class="acao-title">Contexto de negócio como âncora</div>
+                            <div class="acao-desc">Antes de falar de comportamento, explique o racional: por que o BTG é assim? De onde vem essa cultura? Qual é o direcionador estratégico por trás dos valores? Quando o time vê o todo, julga menos e entende mais.</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="detail-section-label">Passo a passo</div>
+                        <div class="passos-list">
+                            <div class="passo-item"><div class="passo-num">1</div><div class="passo-text"><span class="passo-bold">Traga o contexto de negócio.</span> Abra com 10 min explicando de onde vem a cultura BTG e qual é o direcionador estratégico por trás dos valores. O time precisa ver o todo antes de se posicionar.</div></div>
+                            <div class="passo-item"><div class="passo-num">2</div><div class="passo-text"><span class="passo-bold">Mapeie o que já existe.</span> Pergunte ao time: quais comportamentos nos já vivemos com consistência? Liste no quadro sem filtrar. Reconheça o que está funcionando antes de falar do gap.</div></div>
+                            <div class="passo-item"><div class="passo-num">3</div><div class="passo-text"><span class="passo-bold">Nomeie o que ainda falta.</span> Pergunte: quais comportamentos ainda não aparecem no nosso dia a dia, no técnico e no comportamental? O time escreve individualmente primeiro, depois compartilha em plenária.</div></div>
+                            <div class="passo-item"><div class="passo-num">4</div><div class="passo-text"><span class="passo-bold">Encerre com compromissos.</span> Cada pessoa define um comportamento concreto que vai reforçar. Registre e volte nisso na próxima reunião.</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Silos e panelinhas -->
+        <div class="dilema-wrap" id="wrap-3">
+            <div class="dilema-card" id="card-3" onclick="toggle(3)">
+                <div class="dilema-top">
+                    <span class="dilema-num">03</span>
+                    <span class="dilema-chevron">&#9660;</span>
+                </div>
+                <div class="dilema-title">Silos e panelinhas</div>
+                <div class="dilema-goal">Reduzir divisão interna e criar senso de time único</div>
+            </div>
+            <div class="dilema-detail" id="detail-3">
+                <div class="detail-divider"></div>
+                <div class="detail-grid">
+                    <div>
+                        <div class="detail-section-label">Ação recomendada</div>
+                        <div class="acao-block">
+                            <div class="acao-title">Diagnóstico coletivo: Temos e Queremos</div>
+                            <div class="acao-fonte">Exercício Crescimentum</div>
+                            <div class="acao-desc">O time mapeia juntos o que tem e quer, e o que não tem e não quer. Quando feito coletivamente, o silo aparece sozinho, e o próprio time propõe o que fazer.</div>
+                        </div>
+                        <div class="acao-block">
+                            <div class="acao-title">Mapa de Perfil do Time</div>
+                            <div class="acao-fonte">Dinâmica Crescimentum</div>
+                            <div class="acao-desc">Revela as diferenças de perfil, força e fragilidade de cada subgrupo, e transforma isso em complementaridade em vez de divisão.</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="detail-section-label">Passo a passo</div>
+                        <div class="passos-list">
+                            <div class="passo-item"><div class="passo-num">1</div><div class="passo-text"><span class="passo-bold">Quebre a crença "nós somos assim, eles são assado".</span> Abra a reunião revelando um objetivo ou dificuldade que é comum a todos os grupos, o inimigo externo une mais do que qualquer discurso.</div></div>
+                            <div class="passo-item"><div class="passo-num">2</div><div class="passo-text"><span class="passo-bold">Diagnóstico coletivo: Temos e Queremos.</span> Divida em grupos misturando as panelinhas intencionalmente. Cada grupo responde: "O que nosso time tem de forte?" e "O que não temos e precisamos?" Compartilhe em plenária e mapeie no quadro.</div></div>
+                            <div class="passo-item"><div class="passo-num">3</div><div class="passo-text"><span class="passo-bold">O silo vai aparecer.</span> não force, deixe o debate revelar as divisões. Quando o próprio time vê, é mais poderoso do que o líder apontar.</div></div>
+                            <div class="passo-item"><div class="passo-num">4</div><div class="passo-text"><span class="passo-bold">Mapa de Perfil do Time.</span> Peça que cada pessoa descreva em uma linha: qual é o seu ponto mais forte e onde sente mais dificuldade. Monte um painel coletivo. Mostre que as diferenças são complementares, não ameaças.</div></div>
+                            <div class="passo-item"><div class="passo-num">5</div><div class="passo-text"><span class="passo-bold">O time propõe.</span> Pergunte: "O que cada um de nós pode fazer diferente para que isso mude?" não resolva sozinho.</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Níveis dispares -->
+        <div class="dilema-wrap" id="wrap-4">
+            <div class="dilema-card" id="card-4" onclick="toggle(4)">
+                <div class="dilema-top">
+                    <span class="dilema-num">04</span>
+                    <span class="dilema-chevron">&#9660;</span>
+                </div>
+                <div class="dilema-title">Níveis dispares no time</div>
+                <div class="dilema-goal">Equalizar conhecimento e experiência, técnico ou geracional</div>
+            </div>
+            <div class="dilema-detail" id="detail-4">
+                <div class="detail-divider"></div>
+                <div class="detail-grid">
+                    <div>
+                        <div class="detail-section-label">Ação recomendada</div>
+                        <div class="acao-block">
+                            <div class="acao-title">Shift and Share: trocas entre membros</div>
+                            <div class="acao-fonte">Estrutura Libertadora</div>
+                            <div class="acao-desc">Cada pessoa ou dupla prepara um "posto de troca" sobre um tema que domina. O grupo roda pelos postos e aprende de quem já tem a experiência, nivelamento sem palestra.</div>
+                        </div>
+                        <div class="acao-block">
+                            <div class="acao-title">Heard, Seen, Respected: escuta cruzada (geracional)</div>
+                            <div class="acao-fonte">Estrutura Libertadora</div>
+                            <div class="acao-desc">Cada pessoa compartilha uma história de não ter sido ouvida ou vista. Poderoso para diferenças geracionais: o que cada geração valoriza e estranha na outra se torna visível com empatia.</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="detail-section-label">Passo a passo</div>
+                        <div class="passos-list">
+                            <div class="passo-item"><div class="passo-num">1</div><div class="passo-text"><span class="passo-bold">Mapeie quem sabe o que.</span> Antes da reunião, identifique as diferenças de nível: técnico, de senioridade ou geracional. não é fraqueza, é complementaridade.</div></div>
+                            <div class="passo-item"><div class="passo-num">2</div><div class="passo-text"><span class="passo-bold">Shift and Share.</span> Monte postos de troca com quem tem mais experiência em cada tema. Quem tem menos aprende, quem ensina consolida. 15-20 min por rodada.</div></div>
+                            <div class="passo-item"><div class="passo-num">3</div><div class="passo-text"><span class="passo-bold">Para questões geracionais: Heard, Seen, Respected (HSR).</span> Em duplas intergeracionais: cada um compartilha uma história de não ter sido ouvido ou reconhecido. O outro apenas escuta, sem debater ou justificar. Troque os papeis.</div></div>
+                            <div class="passo-item"><div class="passo-num">4</div><div class="passo-text"><span class="passo-bold">Defina duplas de projeto.</span> Cruze os níveis nas próximas entregas intencionalmente, não por piedade, mas por ganho mútuo.</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Time não bate metas -->
+        <div class="dilema-wrap" id="wrap-5">
+            <div class="dilema-card" id="card-5" onclick="toggle(5)">
+                <div class="dilema-top">
+                    <span class="dilema-num">05</span>
+                    <span class="dilema-chevron">&#9660;</span>
+                </div>
+                <div class="dilema-title">Time não bate metas</div>
+                <div class="dilema-goal">Identificar causas reais do gap e replanejar com o time</div>
+            </div>
+            <div class="dilema-detail" id="detail-5">
+                <div class="detail-divider"></div>
+                <div class="detail-grid">
+                    <div>
+                        <div class="detail-section-label">Ação recomendada</div>
+                        <div class="acao-block">
+                            <div class="acao-title">Retrospectiva W3: O Que? E Daí? E Agora?</div>
+                            <div class="acao-fonte">Estrutura Libertadora (referência: Harvard Business Review)</div>
+                            <div class="acao-desc">Três perguntas em sequência: o que está acontecendo de fato? Por que isso importa? Que ações concretas vamos tomar? Simples, poderoso e sem escorregamento para desculpas.</div>
+                        </div>
+                        <div class="acao-block">
+                            <div class="acao-title">Barreiras X soluções</div>
+                            <div class="acao-fonte">Exercício Crescimentum</div>
+                            <div class="acao-desc">O time lista as barreiras reais que impedem a entrega, e para cada uma, define uma solução concreta com responsável e prazo.</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="detail-section-label">Passo a passo</div>
+                        <div class="passos-list">
+                            <div class="passo-item"><div class="passo-num">1</div><div class="passo-text"><span class="passo-bold">O Que? (10 min)</span> Sem julgamento: o que está acontecendo? Quais dados, fatos e observações concretos descrevem onde estamos?</div></div>
+                            <div class="passo-item"><div class="passo-num">2</div><div class="passo-text"><span class="passo-bold">E Daí? (15 min)</span> Por que isso esta acontecendo? Quais padrões aparecem? Hipóteses sobre causas? Use grupos pequenos antes da plenária.</div></div>
+                            <div class="passo-item"><div class="passo-num">3</div><div class="passo-text"><span class="passo-bold">Barreiras X soluções (20 min)</span> Para cada causa identificada: qual é a barreira real? O que podemos fazer, dentro do nosso controle, para remover?</div></div>
+                            <div class="passo-item"><div class="passo-num">4</div><div class="passo-text"><span class="passo-bold">E Agora? (10 min)</span> Saia com ações específicas: quem faz o que, até quando. Sem ação com dono, não é compromisso.</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. Time não se conhece -->
+        <div class="dilema-wrap" id="wrap-6">
+            <div class="dilema-card" id="card-6" onclick="toggle(6)">
+                <div class="dilema-top">
+                    <span class="dilema-num">06</span>
+                    <span class="dilema-chevron">&#9660;</span>
+                </div>
+                <div class="dilema-title">Time não se conhece</div>
+                <div class="dilema-goal">Criar vínculo entre pessoas novas ou dispersas</div>
+            </div>
+            <div class="dilema-detail" id="detail-6">
+                <div class="detail-divider"></div>
+                <div class="detail-grid">
+                    <div>
+                        <div class="detail-section-label">Ação recomendada</div>
+                        <div class="acao-block">
+                            <div class="acao-title">Linha do Tempo Pessoal e Profissional</div>
+                            <div class="acao-fonte">Dinâmica Crescimentum</div>
+                            <div class="acao-desc">Cada pessoa traça sua linha do tempo, marcos pessoais e profissionais que a formaram. Vai além do cargo e do currículo: revela quem é a pessoa por trás do profissional, criando conexão genuína.</div>
+                        </div>
+                        <div class="acao-block">
+                            <div class="acao-title">Perguntas de Conexão em Rodadas</div>
+                            <div class="acao-fonte">Exercício Crescimentum</div>
+                            <div class="acao-desc">Perguntas que abrem conversas reais entre pessoas que ainda não se conhecem bem, em rodadas de duplas ou trios. As perguntas estão no passo a passo ao lado.</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="detail-section-label">Passo a passo</div>
+                        <div class="passos-list">
+                            <div class="passo-item"><div class="passo-num">1</div><div class="passo-text"><span class="passo-bold">Abra com conexão rápida.</span> Três rodadas de 4-5 min em duplas com as perguntas: "Qual é o seu maior desafio agora?" e "O que você espera trazer para esse time?" Troque os pares a cada rodada.</div></div>
+                            <div class="passo-item"><div class="passo-num">2</div><div class="passo-text"><span class="passo-bold">Linha do Tempo Pessoal e Profissional.</span> Cada pessoa tem 10 min para traçar sua linha do tempo em um papel, marcos que a formaram, pessoal e profissionalmente. Depois, cada um apresenta em 2-3 min. O grupo escuta sem avaliar.</div></div>
+                            <div class="passo-item"><div class="passo-num">3</div><div class="passo-text"><span class="passo-bold">Rodada de perguntas de conexão.</span> Em duplas ou trios formados aleatoriamente, cada pessoa responde a uma das perguntas: "O que você faz fora do trabalho que poucos aqui sabem?", "Qual foi o maior aprendizado da sua carreira até agora?" ou "O que você precisaria para se sentir mais parte desse time?" Rotacione os grupos para ampliar o alcance.</div></div>
+                            <div class="passo-item"><div class="passo-num">4</div><div class="passo-text"><span class="passo-bold">Encerre com o que surpreendeu.</span> Em plenária: cada pessoa compartilha algo que descobriu sobre um colega que não sabia. Cria memória coletiva.</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. Falta de liderança no time -->
+        <div class="dilema-wrap" id="wrap-7">
+            <div class="dilema-card" id="card-7" onclick="toggle(7)">
+                <div class="dilema-top">
+                    <span class="dilema-num">07</span>
+                    <span class="dilema-chevron">&#9660;</span>
+                </div>
+                <div class="dilema-title">Falta de liderança no time</div>
+                <div class="dilema-goal">Desenvolver potenciais líderes que ainda não tem essa referência</div>
+            </div>
+            <div class="dilema-detail" id="detail-7">
+                <div class="detail-divider"></div>
+                <div class="detail-grid">
+                    <div>
+                        <div class="detail-section-label">Ação recomendada</div>
+                        <div class="acao-block">
+                            <div class="acao-title">Exploração de Dilemas de Liderança</div>
+                            <div class="acao-fonte">Dinâmica Crescimentum</div>
+                            <div class="acao-desc">O líder traz situações reais, do próprio contexto BTG ou da formação, e pergunta ao time: "O que você faria?" O debate sobre escolhas e raciocínio de liderança desenvolve mais do que qualquer aula.</div>
+                        </div>
+                        <div class="acao-block">
+                            <div class="acao-title">Que Líder Você Vê em Mim?</div>
+                            <div class="acao-fonte">Exercício Crescimentum</div>
+                            <div class="acao-desc">Cada pessoa recebe feedback estruturado do grupo sobre quais comportamentos de liderança já são percebidos nela, e quais ainda precisam aparecer. Cria consciência de potencial.</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="detail-section-label">Passo a passo</div>
+                        <div class="passos-list">
+                            <div class="passo-item"><div class="passo-num">1</div><div class="passo-text"><span class="passo-bold">Selecione dilemas reais.</span> Escolha 2 ou 3 situações concretas de liderança que o próprio time já enfrentou ou que você viveu. Quanto mais próximo da realidade deles, mais engajamento.</div></div>
+                            <div class="passo-item"><div class="passo-num">2</div><div class="passo-text"><span class="passo-bold">Exploração individual e coletiva.</span> Apresente a situação. Cada pessoa decide o que faria, sem influência dos colegas. Depois: debate em plenária sobre o raciocínio por trás de cada escolha.</div></div>
+                            <div class="passo-item"><div class="passo-num">3</div><div class="passo-text"><span class="passo-bold">Que Líder Você Vê em Mim?</span> Em rodadas curtas, cada pessoa ouve do grupo: "O comportamento de liderança que já vejo em você é..." e "O que eu esperaria ver mais de você é..."</div></div>
+                            <div class="passo-item"><div class="passo-num">4</div><div class="passo-text"><span class="passo-bold">Conecte com o plano.</span> Cada pessoa define um comportamento de liderança que vai praticar na próxima semana, concreto e observável.</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. Desmotivação -->
+        <div class="dilema-wrap" id="wrap-8">
+            <div class="dilema-card" id="card-8" onclick="toggle(8)">
+                <div class="dilema-top">
+                    <span class="dilema-num">08</span>
+                    <span class="dilema-chevron">&#9660;</span>
+                </div>
+                <div class="dilema-title">Desmotivação e falta de reconhecimento</div>
+                <div class="dilema-goal">Reengajar o time e valorizar contribuições de forma genuína</div>
+            </div>
+            <div class="dilema-detail" id="detail-8">
+                <div class="detail-divider"></div>
+                <div class="detail-grid">
+                    <div>
+                        <div class="detail-section-label">Ação recomendada</div>
+                        <div class="acao-block">
+                            <div class="acao-title">Reconhecimento de comportamentos em roda</div>
+                            <div class="acao-fonte">Dinâmica Crescimentum</div>
+                            <div class="acao-desc">Cada pessoa reconhece um colega por um comportamento concreto observado nos últimos projetos. Não é sobre resultado, é sobre o que a pessoa fez que o time notou e valoriza.</div>
+                        </div>
+                        <div class="acao-block">
+                            <div class="acao-title">Rodada de aprendizados recentes</div>
+                            <div class="acao-fonte">Exercício Crescimentum</div>
+                            <div class="acao-desc">Cada membro compartilha o maior aprendizado que tirou de um projeto recente, técnico, relacional ou de processo. Encerra com a pergunta: o que cada um quer aprender mais.</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="detail-section-label">Passo a passo</div>
+                        <div class="passos-list">
+                            <div class="passo-item"><div class="passo-num">1</div><div class="passo-text"><span class="passo-bold">Abra com o que foi bem.</span> Dedique os primeiros 20 min a celebrar entregas recentes. Não pule para problemas, o time precisa sentir que o esforço foi visto antes de qualquer outra conversa.</div></div>
+                            <div class="passo-item"><div class="passo-num">2</div><div class="passo-text"><span class="passo-bold">Reconhecimento em roda.</span> Cada pessoa fala em voz alta: "Nos últimos projetos, observei em [colega] o comportamento de..." Foco no comportamento, não no resultado. Ninguém é pulado.</div></div>
+                            <div class="passo-item"><div class="passo-num">3</div><div class="passo-text"><span class="passo-bold">Rodada de aprendizados.</span> Cada pessoa responde: "O maior aprendizado que tirei de um projeto recente foi..." Pode ser técnico, relacional ou de processo. Sem julgamento, só escuta.</div></div>
+                            <div class="passo-item"><div class="passo-num">4</div><div class="passo-text"><span class="passo-bold">Encerre com o próximo nível.</span> Pergunte: "O que cada um quer aprender ou conquistar até a nossa próxima reunião?" Cria antecipação positiva, não cobrança.</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /grid -->
+
+    <!-- Footer -->
+    <div class="footer">PDL BTG 2026 - Crescimentum</div>
+
+</div>
+
+<script>
+    let activeId = null;
+
+    function toggle(id) {
+        const card = document.getElementById('card-' + id);
+        const detail = document.getElementById('detail-' + id);
+        const wrap = document.getElementById('wrap-' + id);
+
+        if (activeId === id) {
+            // close
+            card.classList.remove('active');
+            detail.classList.remove('open');
+            wrap.classList.remove('expanded');
+            activeId = null;
+        } else {
+            // close previous
+            if (activeId) {
+                document.getElementById('card-' + activeId).classList.remove('active');
+                document.getElementById('detail-' + activeId).classList.remove('open');
+                document.getElementById('wrap-' + activeId).classList.remove('expanded');
+            }
+            // open new
+            card.classList.add('active');
+            detail.classList.add('open');
+            wrap.classList.add('expanded');
+            activeId = id;
+
+            // scroll into view
+            setTimeout(() => {
+                card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 50);
+        }
+    }
+</script>
+
+</body>
+</html>
